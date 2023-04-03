@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Post } = require('../../models');
+const { Post } = require('../../models'); 
 const withAuth = require('../../utils/auth')
 
 //Post route on '/' after checking authorization
@@ -16,6 +16,8 @@ router.post('/', withAuth, async (req, res) => {
     }
     
 });
+
+
 //Delete route on '/:id' after checking authorization
 router.delete('/:id', withAuth, async (req, res) => {
     try {
@@ -36,5 +38,19 @@ router.delete('/:id', withAuth, async (req, res) => {
       res.status(500).json(err);
     }
   });
+// Get route on / after checking authorization
+  router.get('/', withAuth, async (req, res) => {
+    try {
+        const getPost = await Post.findOne({
+            ...req.body,
+            user_id: req.session.user_id,
+        });
+
+        res.status(200).json(getPost);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+    
+});
 
   module.exports = router;
